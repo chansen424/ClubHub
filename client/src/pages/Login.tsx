@@ -15,7 +15,7 @@ export default function Login() {
 
     const onSubmit = (credentials: Credentials) => {
         const {name, password} = credentials;
-        const properKey = userType == "orgs" ? "name" : "netId";
+        const properKey = userType === "orgs" ? "name" : "netId";
         const body = { [properKey]: name, password };
 
         fetch(`http://localhost:5000/api/${userType}/login`, {
@@ -23,7 +23,7 @@ export default function Login() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body)
         }).then(res => {
-            if (res.status == 200) {
+            if (res.status === 200) {
                 history.push('/home');
             } else {
                 console.error('Something went wrong');
@@ -33,11 +33,11 @@ export default function Login() {
 
     return (
         <>
-        <h1>ClubHub</h1>
+        <h1>Login</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
             <div style={{margin: 'auto', width: 'max-content', display: 'flex', flexDirection: 'column', justifyContent: 'space-around', alignItems: 'flex-end'}}>
                 <div>
-                    <label style={{fontWeight: 700}} htmlFor="user-type">Log In As:</label>
+                    <label style={{fontWeight: 700}} htmlFor="userType">Log In As:</label>
 
                     <select name="userType" onChange={e => setUserType(e.target.value)}>
                         <option value="orgs">Org</option>
@@ -47,7 +47,7 @@ export default function Login() {
 
                 <div>
                     <label style={{fontWeight: 700}} htmlFor="name">
-                        {userType == "orgs" ? "Name" : "NetID"}
+                        {userType === "orgs" ? "Name" : "NetID"}
                     </label>
                     <input name="name" ref={register({ required: true })} />
                     {errors.name && <span>This field is required</span>}
@@ -66,12 +66,5 @@ export default function Login() {
           
         </form>
         </>
-      );
+    );
 }
-
-
-{/* <div>
-    <label style={{fontWeight: 700}} htmlFor="description">Description</label>
-    <input name="description" ref={register({ required: true })} />
-    {errors.description && <span>This field is required</span>}
-</div> */}
