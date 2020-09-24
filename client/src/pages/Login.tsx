@@ -1,26 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form'; 
 import { useHistory } from 'react-router-dom';
 
-type OrgCredentials = {
+type Credentials = {
     name: string,
     password: string
 }
 
 export default function Login() {
     const history = useHistory();
-    const { register, handleSubmit, errors } = useForm<OrgCredentials>();
+    const [userType, setUserType] = useState("orgs");
 
-    const onSubmit = (credentials: OrgCredentials) => {
-        fetch('http://localhost:5000/api/orgs/login', {
+    const { register, handleSubmit, errors } = useForm<Credentials>();
+
+    const onSubmit = (credentials: Credentials) => {
+        const {name, password} = credentials;
+        const properKey = userType == "orgs" ? "name" : "netId";
+        const body = { [properKey]: name, password };
+
+        fetch(`http://localhost:5000/api/${userType}/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(credentials)
+            body: JSON.stringify(body)
         }).then(res => {
             if (res.status == 200) {
-                history.push('/home')
+                history.push('/home');
+            } else {
+                console.error('Something went wrong');
             }
-        })
+        });
     };
 
     return (
@@ -31,15 +39,16 @@ export default function Login() {
                 <div>
                     <label style={{fontWeight: 700}} htmlFor="user-type">Log In As:</label>
 
-                    <label htmlFor="org">Org</label>
-                    <input type="radio" id="org" name="user-type" value="org" ref={register} />
-                    
-                    <label htmlFor="applicant">Applicant</label>
-                    <input type="radio" id="applicant" name="user-type" value="applicant" ref={register} />
+                    <select name="userType" onChange={e => setUserType(e.target.value)}>
+                        <option value="orgs">Org</option>
+                        <option value="applicants">Applicant</option>
+                    </select>
                 </div>
 
                 <div>
-                    <label style={{fontWeight: 700}} htmlFor="name">NetID</label>
+                    <label style={{fontWeight: 700}} htmlFor="name">
+                        {userType == "orgs" ? "Name" : "NetID"}
+                    </label>
                     <input name="name" ref={register({ required: true })} />
                     {errors.name && <span>This field is required</span>}
                 </div>
