@@ -19,7 +19,7 @@ const PostingSchema = new Schema ({
         required: true
     },
     orgId:{
-        type: {type: mongoose.Schema.Types.ObjectId, ref: 'Org'},
+        type: mongoose.Schema.Types.ObjectId, ref: 'Org',
         required: true
     }
 });
