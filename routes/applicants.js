@@ -10,31 +10,26 @@ const Application = require('../models/Application');
 //@access Public
 router.post('/', (req, res) =>{
     Applicant.findById(req.body.netId)
-    .then(appl=> {
-        if (appl)
-        return res.status(404).json({msg: "Applicant exists already"})
-    
-    
+    .then(appl=> res.status(404).json({msg: "Applicant exists already"}))
+    .catch(err=> {
         req.body.password = Bcrypt.hashSync(req.body.password, 10);
 
-    const newAppl = new Applicant({
-        netId: req.body.netId,
-        password: req.body.password,
-        name: req.body.name
-    });
-
-
-    newAppl.save().then(appl =>{
-        res.json({
-            appl: {
-            id:appl._id,
-            netId: appl.netId,
-            name:appl.name
-        }})
-    } );
+        const newAppl = new Applicant({
+            netId: req.body.netId,
+            password: req.body.password,
+            name: req.body.name
+        });
     
-}).catch(err=> res.status(400).json({msg:err}))
-
+    
+        newAppl.save().then(appl =>{
+            res.json({
+                appl: {
+                id:appl._id,
+                netId: appl.netId,
+                name:appl.name
+            }})
+        });
+    })
 });
 
 //@route POST api/applicants/login
@@ -43,14 +38,15 @@ router.post('/', (req, res) =>{
 router.post('/login', (req, res) =>{
     Applicant.findOne({ netId: req.body.netId }).exec()
     .then(
-        appl =>{
-        if (!Bcrypt.compareSync(req.body.password, appl.password)) {
+        applicant => {
+            console.log(applicant)
+        if (!Bcrypt.compareSync(req.body.password, applicant.password)) {
             return res.json({success:false});
         }
         res.json({
                 appl: {
-                id:appl._id,
-                netId:appl.netId,
+                id:applicant._id,
+                netId:applicant.netId,
                 }
             });
         }
