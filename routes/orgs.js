@@ -10,30 +10,26 @@ const Posting = require('../models/Posting');
 //@access Public
 router.post('/', (req, res) =>{
     Org.findById(req.body.name)
-    .then(orgRes=> {
-        if (orgRes)
-        return res.status(404).json({msg: "Organization exists already"})
-    
-    
+    .then(orgRes => { res.status(404).json({msg: "Organization exists already"})})
+    .catch(err => {
         req.body.password = Bcrypt.hashSync(req.body.password, 10);
 
-    const newOrg = new Org({
-        name: req.body.name,
-        password: req.body.password,
-        description: req.body.description
-    });
+        const newOrg = new Org({
+            name: req.body.name,
+            password: req.body.password,
+            description: req.body.description
+        });
 
 
-    newOrg.save().then(org =>{
-        res.json({
-            org: {
-            id:org._id,
-            name: org.name,
-            description:org.description
-        }})
-    } );
-    
-}).catch(err=> res.status(400).json({msg:err}))
+        newOrg.save().then(org =>{
+            res.json({
+                org: {
+                id:org._id,
+                name: org.name,
+                description:org.description
+            }})
+        });
+    })
 
 });
 
@@ -43,16 +39,17 @@ router.post('/', (req, res) =>{
 router.post('/login', (req, res) =>{
     Org.findOne({ name: req.body.name }).exec()
     .then(
-        orgRes =>{
-        if (!Bcrypt.compareSync(req.body.password, orgRes.password)) {
-            return res.json({success:false});
-        }
-        res.json({
-                org: {
-                id:org._id,
-                name:org.name,
-                }
-            });
+        orgRes => {
+            if (Bcrypt.compareSync(req.body.password, orgRes.password)) {
+                return res.json({
+                    org: {
+                    id:orgRes._id,
+                    name:orgRes.name,
+                    }
+                });
+            } else {
+                res.json({success:false});
+            }
         }
     )
     .catch(err => res.status(400).json({success:false}))
