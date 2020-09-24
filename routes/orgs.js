@@ -58,6 +58,39 @@ router.post('/login', (req, res) =>{
     .catch(err => res.status(400).json({success:false}))
 });
 
+//@route POST api/orgs/create
+//@desc create a posting
+//@access Public
+router.post('/create', (req, res) =>{
+    Org.findOne({ id: req.body.orgId }).exec()
+    .then(
+        orgRes =>{
+        
+        if(orgRes){
+            const posting = new Posting({
+                orgId:res.body.orgId,
+                postigName: res.body.postigName,
+                description: res.body.description,
+                deadline:res.body.deadline,
+                question:res.body.question
+            });
+
+
+            posting.save().then(posting =>{
+                res.json({
+                    posting: {
+                    id:posting._id,
+                    name: posting.postingName,
+                    description:org.description
+                }})
+            } );
+
+        }
+}
+    )
+    .catch(err => res.status(400).json({success:false}))
+});
+
 
 
 module.exports = router;
