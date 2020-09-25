@@ -4,6 +4,7 @@ const Bcrypt = require("bcrypt");
 const config = require("config");
 const Org = require('../models/Org');
 const Posting = require('../models/Posting');
+const Application = require('../models/Application');
 
 //@route POST api/orgs
 //@desc create an org
@@ -84,6 +85,55 @@ router.post('/create', (req, res) =>{
 
         }
 }
+    )
+    .catch(err => res.status(400).json({success:false}))
+});
+
+//@route POST api/orgs/posting
+//@desc create a posting
+//@access Public
+router.post('/posting', (req, res) =>{
+    Posting.findOne({ orgId: req.body.orgId, name: req.body.name}).exec()
+    .then(posting => res.status(400).json({success:false, posting:posting})
+    )
+    .catch(err => {
+        const newPosting = new Posting({
+            name: req.body.name,
+            orgId:req.body.orgId,
+            question:req.body.question,
+            deadline: req.body.deadline,
+            description:req.body.description
+        });
+
+        newPosting.save().then(posting=> 
+            res.json(posting));
+    })
+});
+
+//@route POST api/orgs/update
+//@desc update an application
+//@access Public
+router.put('/update', (req, res) =>{
+    Application.findOne({ netId: req.body.netId, postingId:req.body.postingId}).exec()
+    .then(application => {
+        application.status = res.body.status;
+        application.save().then(application => res.json(application));
+    })
+    .catch(err => res.status(400).json({success:false}))
+});
+
+//@route GET api/orgs/[id]
+//@desc get an org's postings
+//@access Public
+router.get('/:orgId', (req, res) =>{
+    Posting.find({ orgId: req.params.orgId }).exec()
+    .then(
+        postings => {
+            console.log(postings);
+        res.json({
+                postings: postings
+            });
+        }
     )
     .catch(err => res.status(400).json({success:false}))
 });

@@ -54,6 +54,44 @@ router.post('/login', (req, res) =>{
     .catch(err => res.status(400).json({success:false}))
 });
 
+//@route POST api/applicants/apply
+//@desc create an application
+//@access Public
+router.post('/login', (req, res) =>{
+    Application.findOne({ netId: req.body.netId, postingId:req.body.postingId }).exec()
+    .then(application => res.status(400).json({success:false, application: application})
+    )
+    .catch(err => {
+        const newApplication = new Application({
+            netId: req.body.netId,
+            postingId:postingId,
+            answer:req.body.answer,
+            status:"pending"
+        });
+
+        newApplication.save().then(applic=> 
+            res.json(applic));
+    })
+});
+
+
+
+//@route GET api/applicants/[id]
+//@desc validate an applicant's applications
+//@access Public
+router.get('/:netId', (req, res) =>{
+    Application.find({ applicantId: req.params.netId }).exec()
+    .then(
+        applications => {
+            console.log(applications);
+        res.json({
+                applications: applications
+            });
+        }
+    )
+    .catch(err => res.status(400).json({success:false}))
+});
+
 
 
 module.exports = router;
