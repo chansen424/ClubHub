@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form'; 
 import { useHistory } from 'react-router-dom';
+import userContext from '../context/userContext';
 
 type Credentials = {
     name: string,
@@ -9,6 +10,7 @@ type Credentials = {
 
 export default function Login() {
     const history = useHistory();
+    const {setUser} = useContext(userContext);
     const [userType, setUserType] = useState("orgs");
 
     const { register, handleSubmit, errors } = useForm<Credentials>();
@@ -22,8 +24,14 @@ export default function Login() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body)
-        }).then(res => {
-            if (res.status === 200) {
+        })
+        .then(async res => ({status: res.status, data: await res.json()}))
+        .then(({status, data}) => {
+            if (status === 200) {
+                setUser({
+                    userType,
+                    ...data
+                })
                 history.push('/home');
             } else {
                 console.error('Something went wrong');
@@ -65,6 +73,7 @@ export default function Login() {
             </div>
           
         </form>
+        <p>Don't have an account? <a href="/signup">Sign up here</a></p>
         </>
     );
 }

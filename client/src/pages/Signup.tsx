@@ -14,6 +14,7 @@ export default function Signup() {
         </select>
         {userType === "orgs" && <OrgSignup />}
         {userType === "applicants" && <ApplicantSignup />}
+        <p>Already have an account? <a href="/">Login here</a></p>
     </>
     )
 }

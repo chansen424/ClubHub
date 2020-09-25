@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
+import userContext from '../context/userContext';
 
 type RequiredOrgInfo = {
     name: string,
@@ -10,6 +11,7 @@ type RequiredOrgInfo = {
 
 export default function OrgSignup() {
     const history = useHistory();
+    const {setUser} = useContext(userContext);
     const { register, handleSubmit, errors } = useForm<RequiredOrgInfo>();
 
     const onSubmit = (data: RequiredOrgInfo) => {
@@ -17,8 +19,13 @@ export default function OrgSignup() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
-        }).then(res => {
-            if (res.status === 200) {
+        }).then(async res => ({status: res.status, data: await res.json()}))
+        .then(({status, data}) => {
+            if (status === 200) {
+                setUser({
+                    userType: "orgs",
+                    ...data
+                })
                 history.push('/home');
             } else {
                 console.error('Something went wrong');
