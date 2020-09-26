@@ -123,6 +123,23 @@ router.put('/update', (req, res) => {
         .catch(err => res.status(400).json({ success: false }))
 });
 
+
+//@route GET api/orgs/all
+//@desc get all postings
+//@access Public
+router.get('/all', (req, res) => {
+    Posting.find().exec()
+        .then(
+            postings => {
+                console.log(postings);
+                res.json({
+                    postings: postings
+                });
+            }
+        )
+        .catch(err => res.status(400).json({err:err }))
+});
+
 //@route GET api/orgs/[id]
 //@desc get an org's postings
 //@access Public
@@ -139,21 +156,6 @@ router.get('/:orgId', (req, res) => {
         .catch(err => res.status(400).json({ success: false }))
 });
 
-//@route GET api/orgs/all
-//@desc get all postings
-//@access Public
-router.get('/', (req, res) => {
-    Posting.find().exec()
-        .then(
-            postings => {
-                console.log(postings);
-                res.json({
-                    postings: postings
-                });
-            }
-        )
-        .catch(err => res.status(400).json({ success: false }))
-});
 
 
 
