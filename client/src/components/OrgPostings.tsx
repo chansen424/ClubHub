@@ -11,7 +11,7 @@ export default function OrgPostings() {
     })
       .then(res => res.json())
       .then(data => setPostings(data.postings))
-  }, [postings]);
+  }, []);
 
   return (
     <>
