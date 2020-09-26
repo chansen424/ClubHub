@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import CreatePosting from '../components/CreatePosting';
+import OrgPostings from '../components/OrgPostings';
 import userContext from '../context/userContext';
 
 export default function Home() {
@@ -10,7 +11,10 @@ export default function Home() {
             <h1>ClubHub</h1>
             <p>You are logged in as a {userType}</p>
             {
-                userType === "orgs" && <CreatePosting />
+                userType === "orgs" && <>
+                    <CreatePosting />
+                    <OrgPostings />
+                </>
             }
         </>
     )
