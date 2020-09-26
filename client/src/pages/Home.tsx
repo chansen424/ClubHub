@@ -1,4 +1,6 @@
 import React, { useContext } from 'react';
+import ApplicantAvailableApps from '../components/ApplicantAvailableApps';
+import ApplicantCompletedApps from '../components/ApplicantCompletedApps';
 import CreatePosting from '../components/CreatePosting';
 import OrgPostings from '../components/OrgPostings';
 import userContext from '../context/userContext';
@@ -14,6 +16,11 @@ export default function Home() {
                 userType === "orgs" && <>
                     <CreatePosting />
                     <OrgPostings />
+                </>
+            }
+            {
+                userType === "applicants" && <>
+                    <ApplicantCompletedApps />
                 </>
             }
         </>
