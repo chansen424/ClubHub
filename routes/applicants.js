@@ -57,7 +57,7 @@ router.post('/login', (req, res) =>{
 //@route POST api/applicants/apply
 //@desc create an application
 //@access Public
-router.post('/login', (req, res) =>{
+router.post('/apply', (req, res) =>{
     Application.findOne({ netId: req.body.netId, postingId:req.body.postingId }).exec()
     .then(application => res.status(400).json({success:false, application: application})
     )
