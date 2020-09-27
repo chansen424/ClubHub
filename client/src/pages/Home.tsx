@@ -20,6 +20,7 @@ export default function Home() {
             }
             {
                 userType === "applicants" && <>
+                    <ApplicantAvailableApps />
                     <ApplicantCompletedApps />
                 </>
             }
