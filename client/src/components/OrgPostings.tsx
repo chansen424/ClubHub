@@ -18,8 +18,12 @@ export default function OrgPostings() {
       <h2>Org Postings</h2>
       {
         postings.map((posting: any) => {
-          console.log(posting)
-          return <p key={posting._id}>{posting.question}</p>
+          return (
+            <div>
+              <p key = {posting._id} style = {{display:'block'}}>{"Posting: " + posting.postingName}</p>
+              <p key={posting._id}>{"Your Application Question: " + posting.question}</p>
+            </div>
+          )
         })
       }
     </>

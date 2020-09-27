@@ -63,7 +63,7 @@ export default function Login() {
 
                 <div>
                     <label style={{fontWeight: 700}} htmlFor="password">Password</label>
-                    <input name="password" ref={register({ required: true })} />
+                    <input type = "password" name="password" ref={register({ required: true })} />
                     {errors.password && <span>This field is required</span>}
                 </div>
 
